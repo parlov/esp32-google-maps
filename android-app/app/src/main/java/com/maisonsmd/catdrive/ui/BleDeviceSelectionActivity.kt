@@ -88,7 +88,10 @@ class BleDeviceSelectionActivity : AppCompatActivity() {
             super.onScanResult(callbackType, result)
 
             val btDevice = result.device
-            mViewDeviceAdapter.addItem(btDevice)
+            //only scan Espressif devices
+            if (btDevice.address.startsWith("7C:2C:67")) {
+                mViewDeviceAdapter.addItem(btDevice)
+            }
         }
     }
 
