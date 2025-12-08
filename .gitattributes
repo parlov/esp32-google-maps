@@ -1,0 +1,15 @@
+# 1. Set line endings for all text files to be normalized (stored as LF)
+* text=auto
+
+# 2. Specifically enforce LF for all text files in the repository
+* text eol=lf
+
+# 3. Add exceptions if needed (e.g., Windows-specific files that MUST be CRLF)
+# *.sln text eol=crlf
+# *.bat text eol=crlf
+
+
+# Explicitly mark known binary image formats as binary to prevent conversions
+*.png binary
+*.bmp binary
+*.jpg binary
