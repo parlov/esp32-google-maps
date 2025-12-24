@@ -260,6 +260,9 @@ class BleService : Service(), LocationListener {
                 stopReconnectTimer()
                 startPingTimer()
                 sendPreferencesToDevice()
+                if (mLastNavigationData != null) {
+                    sendToDevice(mLastNavigationData)
+                }
 
                 LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(
                     Intent(Intents.CONNECTION_UPDATE).apply {
