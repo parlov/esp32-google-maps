@@ -169,6 +169,7 @@ void loop() {
 		connectionChanged = false;
 
 		if (deviceConnected) {
+			Data::setNextRoad("PikiPuka-Ta ready!");
 			Data::setNextRoadDesc("Connected!");
 		} else {
 			navigationQueue = std::queue<String>();
