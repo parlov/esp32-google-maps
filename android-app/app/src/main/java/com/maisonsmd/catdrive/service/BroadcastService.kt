@@ -397,6 +397,7 @@ class BleService : Service(), LocationListener {
         fun sanitize(str: String): String {
             // Remove non-breaking space
             return str.replace("\u00a0", " ").replace("\n", " ").replace("…", "...")
+                .replace("·", "~")
         }
 
         val bitmap = data?.actionIcon?.bitmap
