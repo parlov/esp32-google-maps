@@ -142,7 +142,7 @@ namespace UI {
 		lv_obj_set_style_text_color(lblDistanceToNextRoad, lv_color_make(0x00, 0x00, 0xff), LV_PART_MAIN);
 
 		lblNextRoad = lv_label_create(lv_scr_act());
-		lv_label_set_text(lblNextRoad, "welcome!");
+		lv_label_set_text(lblNextRoad, "Welcome!");
 
 		lblNextRoadDesc = lv_label_create(lv_scr_act());
 		lv_label_set_text(lblNextRoadDesc, "");

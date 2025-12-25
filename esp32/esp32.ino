@@ -168,7 +168,9 @@ void loop() {
 	if (connectionChanged) {
 		connectionChanged = false;
 
-		if (!deviceConnected) {
+		if (deviceConnected) {
+			Data::setNextRoadDesc("Connected!");
+		} else {
 			navigationQueue = std::queue<String>();
 			Data::clearNavigationData();
 			Data::clearSpeedData();
