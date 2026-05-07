@@ -4,19 +4,19 @@ import com.maisonsmd.catdrive.BuildConfig
 
 class Intents {
     companion object {
-        private const val APP_ID = BuildConfig.APPLICATION_ID
+        private val APP_ID = BuildConfig.APPLICATION_ID
 
-        const val ENABLE_SERVICES = "${APP_ID}.intent.ENABLE_SERVICES"
-        const val DISABLE_SERVICES = "${APP_ID}.intent.DISABLE_SERVICES"
-        const val BIND_LOCAL_SERVICE = "${APP_ID}.intent.LOCAL_BIND"
-        const val BACKGROUND_SERVICE_STATUS = "${APP_ID}.intent.SERVICE_RUNNING"
+        val ENABLE_SERVICES = "${APP_ID}.intent.ENABLE_SERVICES"
+        val DISABLE_SERVICES = "${APP_ID}.intent.DISABLE_SERVICES"
+        val BIND_LOCAL_SERVICE = "${APP_ID}.intent.LOCAL_BIND"
+        val BACKGROUND_SERVICE_STATUS = "${APP_ID}.intent.SERVICE_RUNNING"
 
-        const val DISCONNECT_DEVICE = "${APP_ID}.intent.DISCONNECT_DEVICE"
-        const val CONNECT_DEVICE = "${APP_ID}.intent.CONNECT_DEVICE"
-        const val CONNECTION_UPDATE = "${APP_ID}.intent.CONNECTION_UPDATE"
+        val DISCONNECT_DEVICE = "${APP_ID}.intent.DISCONNECT_DEVICE"
+        val CONNECT_DEVICE = "${APP_ID}.intent.CONNECT_DEVICE"
+        val CONNECTION_UPDATE = "${APP_ID}.intent.CONNECTION_UPDATE"
 
-        const val NAVIGATION_UPDATE = "${APP_ID}.intent.NAVIGATION_UPDATE"
-        const val GPS_UPDATE = "${APP_ID}.intent.GPS_UPDATE"
+        val NAVIGATION_UPDATE = "${APP_ID}.intent.NAVIGATION_UPDATE"
+        val GPS_UPDATE = "${APP_ID}.intent.GPS_UPDATE"
 
         const val OPEN_NOTIFICATION_LISTENER_SETTINGS =
             "android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"

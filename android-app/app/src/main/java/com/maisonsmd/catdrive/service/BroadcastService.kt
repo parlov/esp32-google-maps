@@ -11,19 +11,19 @@ import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCallback
 import android.bluetooth.BluetoothGattCharacteristic
-import android.bluetooth.BluetoothGattDescriptor
 import android.bluetooth.BluetoothManager
 import android.bluetooth.BluetoothProfile
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.graphics.Bitmap
+import android.content.pm.ServiceInfo
 import android.graphics.Color
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Binder
+import android.os.Build
 import android.os.IBinder
 import android.util.Size
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -159,7 +159,12 @@ class BleService : Service(), LocationListener {
 
         if (intent?.action == Intents.ENABLE_SERVICES) {
             runInBackground = true
-            startForeground(NOTIFICATION_ID, buildForegroundNotification())
+            
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                startForeground(NOTIFICATION_ID, buildForegroundNotification(), ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION)
+            } else {
+                startForeground(NOTIFICATION_ID, buildForegroundNotification())
+            }
 
             LocalBroadcastManager.getInstance(this)
                 .registerReceiver(navigationReceiver, IntentFilter(Intents.NAVIGATION_UPDATE))
@@ -402,7 +407,7 @@ class BleService : Service(), LocationListener {
 
         val bitmap = data?.actionIcon?.bitmap
 
-        var compressed: ByteArray? = bitmap?.let {
+        val compressed: ByteArray? = bitmap?.let {
             val helper = BitmapHelper()
             helper.toBlackAndWhiteBuffer(
                 helper.compressBitmap(

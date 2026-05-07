@@ -1,5 +1,6 @@
 package com.maisonsmd.catdrive.service
 
+import android.app.Notification
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
 import com.maisonsmd.catdrive.lib.GMAPS_PACKAGE
@@ -40,10 +41,7 @@ open class NavigationListener : NotificationListenerService() {
         try {
             Timber.d("Checking for active Navigation notifications")
             this.activeNotifications.forEach { statusBarNotification ->
-                // Timber.v(statusBarNotification.toString())
-                onNotificationPosted(
-                    statusBarNotification
-                )
+                onNotificationPosted(statusBarNotification)
             }
         } catch (e: Throwable) {
             Timber.e("Failed to check for active notifications: $e")
@@ -51,35 +49,37 @@ open class NavigationListener : NotificationListenerService() {
     }
 
     private fun isGoogleMapsNotification(sbn: StatusBarNotification?): Boolean {
-        // Timber.v("enabled ${mEnabled}, isOngoing: ${sbn!!.isOngoing}, id: ${sbn.id}")
-        if (!enabled || sbn == null)
-            return false
+        if (!enabled || sbn == null) return false
 
-        if (!sbn.isOngoing || GMAPS_PACKAGE !in sbn.packageName)
-            return false
+        // Check if it's from Google Maps
+        if (GMAPS_PACKAGE !in sbn.packageName) return false
 
-        return (sbn.id == 1)
+        val notification = sbn.notification
+        
+        // Navigation notifications are usually ongoing
+        val isOngoing = (notification.flags and Notification.FLAG_ONGOING_EVENT) != 0
+        
+        // They also usually have the CATEGORY_NAVIGATION
+        val isNavigationCategory = notification.category == Notification.CATEGORY_NAVIGATION
+
+        // We accept it if it's ongoing AND (is in navigation category OR has a specific ID)
+        // This makes it much more robust against Google Maps updates
+        return isOngoing && (isNavigationCategory || sbn.id == 1)
     }
 
-    protected open fun onNavigationNotificationAdded(navNotification: NavigationNotification) {
-    }
+    protected open fun onNavigationNotificationAdded(navNotification: NavigationNotification) {}
 
-    protected open fun onNavigationNotificationUpdated(navNotification: NavigationNotification) {
-    }
+    protected open fun onNavigationNotificationUpdated(navNotification: NavigationNotification) {}
 
-    protected open fun onNavigationNotificationRemoved(navNotification: NavigationNotification) {
-    }
+    protected open fun onNavigationNotificationRemoved(navNotification: NavigationNotification) {}
 
     override fun onNotificationPosted(sbn: StatusBarNotification?) {
-        // Timber.v("onNotificationPosted ${sbn?.packageName}")
-
-        if (isGoogleMapsNotification(sbn))
+        if (isGoogleMapsNotification(sbn)) {
             handleGoogleNotification(sbn!!)
+        }
     }
 
     override fun onNotificationRemoved(sbn: StatusBarNotification?) {
-        // Timber.v("onNotificationRemoved ${sbn?.packageName}")
-
         if (isGoogleMapsNotification(sbn)) {
             mNotificationParserCoroutine?.cancel()
 
@@ -99,14 +99,16 @@ open class NavigationListener : NotificationListenerService() {
 
         mNotificationParserCoroutine = GlobalScope.launch(Dispatchers.Main) {
             val worker = GlobalScope.async(Dispatchers.Default) {
-                return@async GMapsNotification(
-                    this@NavigationListener.applicationContext,
-                    mLastNotification
-                )
+                return@async try {
+                    GMapsNotification(this@NavigationListener.applicationContext, mLastNotification)
+                } catch (e: Exception) {
+                    Timber.e("Error creating GMapsNotification: $e")
+                    null
+                }
             }
 
             try {
-                val mapNotification = worker.await()
+                val mapNotification = worker.await() ?: return@launch
                 val lastNotification = mCurrentNotification
 
                 val updated: Boolean = if (lastNotification == null) {
@@ -114,7 +116,6 @@ open class NavigationListener : NotificationListenerService() {
                     true
                 } else {
                     lastNotification.navigationData != mapNotification.navigationData
-                    // Timber.v("Notification is different than previous: $updated")
                 }
 
                 if (updated) {
@@ -127,5 +128,4 @@ open class NavigationListener : NotificationListenerService() {
             }
         }
     }
-
 }

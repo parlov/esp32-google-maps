@@ -26,7 +26,7 @@ import com.maisonsmd.catdrive.utils.PermissionCheck
 import com.maisonsmd.catdrive.utils.ServiceManager
 import timber.log.Timber
 
-const val SHARED_PREFERENCES_FILE = "${BuildConfig.APPLICATION_ID}.preferences"
+val SHARED_PREFERENCES_FILE = "${BuildConfig.APPLICATION_ID}.preferences"
 
 class MainActivity : AppCompatActivity() {
     private lateinit var mBinding: ActivityMainBinding
